@@ -216,3 +216,30 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# Python virtual environment
+backend/venv/
+
+# Database
+backend/*.db
+
+# Model weights (large file — store separately)
+backend/weights/*.pt
+
+# Exports and logs
+backend/exports/
+backend/logs/
+
+# Node modules
+frontend/node_modules/
+
+# Environment variables
+.env
+backend/.env
+frontend/.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
