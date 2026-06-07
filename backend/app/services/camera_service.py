@@ -4,9 +4,9 @@ from config import Config
 
 class CameraService:
     def __init__(self):
-        self.cap = None
+        self.cap     = None
         self.running = False
-        self.lock = threading.Lock()
+        self.lock    = threading.Lock()
 
     def start(self):
         self.cap = cv2.VideoCapture(Config.CAMERA_INDEX)
@@ -21,6 +21,9 @@ class CameraService:
             return False, None
         with self.lock:
             ret, frame = self.cap.read()
+            if not ret:
+                self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                ret, frame = self.cap.read()
         return ret, frame
 
     def stop(self):
