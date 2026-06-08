@@ -32,4 +32,6 @@ def create_app():
     with app.app_context():
         db.create_all()
 
+    plc_service.connect(port='COM8')  # ← change this too
+
     return app
