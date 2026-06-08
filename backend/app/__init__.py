@@ -32,6 +32,8 @@ def create_app():
     with app.app_context():
         db.create_all()
 
-    plc_service.connect(port='COM8')  # ← change this too
+    # Auto-connect to Arduino if available
+    from app.services.plc_service import plc_service
+    plc_service.connect(port='COM8')
 
     return app
