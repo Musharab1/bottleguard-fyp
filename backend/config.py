@@ -14,16 +14,16 @@ class Config:
 
     # YOLO
     MODEL_PATH = str(BASE_DIR / 'weights' / 'yolo11n.pt')
-    CONFIDENCE_THRESHOLD = 0.5
+    CONFIDENCE_THRESHOLD = 0.7
     CLASS_NAMES = ['Cap-missing', 'Correct-Bottle', 'Label-missing']
 
     # Camera
     
     # CAMERA_INDEX = 0
 
-    # CAMERA_INDEX = 1    ---> for the cable camera
+    CAMERA_INDEX = 1    # ---> for the cable camera
     
-    CAMERA_INDEX = r'C:\Users\PMLS\Documents\FYP\FYP\bottleguard-fyp\backend\test_videos\bottles_test.mp4'
+    # CAMERA_INDEX = r'C:\Users\PMLS\Documents\FYP\FYP\bottleguard-fyp\backend\test_videos\bottles_test.mp4'
 
     FRAME_WIDTH = 640
     FRAME_HEIGHT = 480

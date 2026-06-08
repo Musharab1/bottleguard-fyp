@@ -7,10 +7,10 @@ class PLCService:
         self.connected        = False
         self.conveyor_running = False
         self.commands_log     = []
-        self.port             = 'COM8'
+        self.port             = 'COM6'
         self.mode             = 'simulation'
 
-    def connect(self, port='COM8', baudrate=9600):
+    def connect(self, port='COM6', baudrate=9600):
         try:
             self.serial_conn = serial.Serial(port, baudrate, timeout=1)
             time.sleep(2)  # wait for Arduino reset
