@@ -66,6 +66,15 @@ export default function History() {
           className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded-lg transition-colors flex items-center gap-2">
           ⬇ Export CSV
         </button>
+        <button onClick={async () => {
+  if (window.confirm('Clear all inspection history?')) {
+    await axios.delete(`${API}/history/clear`);
+    fetchHistory(1);
+  }
+}}
+className="px-4 py-2 bg-red-700 hover:bg-red-600 text-white text-sm rounded-lg transition-colors">
+  🗑 Clear history
+</button>
       </div>
 
       {/* Filter tabs */}

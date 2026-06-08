@@ -36,3 +36,9 @@ def get_stats():
         'label_missing': label,
         'defect_rate':   round((defective / total * 100), 2) if total > 0 else 0
     })
+
+@history_bp.route('/clear', methods=['DELETE'])
+def clear_history():
+    db.session.query(Inspection).delete()
+    db.session.commit()
+    return jsonify({'message': 'History cleared', 'success': True})

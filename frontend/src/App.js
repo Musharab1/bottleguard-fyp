@@ -53,7 +53,7 @@ function Navbar() {
           </svg>
         </div>
         <span className="font-semibold text-lg tracking-tight">BottleGuard</span>
-        <span className="text-gray-500 text-xs ml-1">UET FYP 2025</span>
+        <span className="text-gray-500 text-xs ml-1">UET FYP 2026</span>
       </div>
 
       <div className="flex items-center gap-1">
