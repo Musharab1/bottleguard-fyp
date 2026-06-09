@@ -38,7 +38,7 @@ function Navbar() {
     { to: '/live',      label: 'Live Feed'   },
     { to: '/analytics', label: 'Analytics'   },
     { to: '/history',   label: 'History'     },
-    { to: '/plc',       label: 'PLC Control' },
+    { to: '/plc',       label: 'Control' },
   ];
 
   return (
@@ -70,7 +70,7 @@ function Navbar() {
 
       <div className="flex items-center gap-4 text-xs text-gray-400 flex-shrink-0">
         <StatusDot label="Camera" active={sysStatus.camera} />
-        <StatusDot label="PLC"    active={sysStatus.plc}    amber={!sysStatus.plc} />
+        <StatusDot label="Control"    active={sysStatus.plc}    amber={!sysStatus.plc} />
         <StatusDot label="System" active={sysStatus.system} />
       </div>
     </nav>

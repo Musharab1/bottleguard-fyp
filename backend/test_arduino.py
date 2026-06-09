@@ -3,8 +3,8 @@ import time
 
 def main():
     try:
-        arduino = serial.Serial('COM6', 9600, timeout=1)
-        print("Connected to Arduino on COM6")
+        arduino = serial.Serial('COM7', 9600, timeout=1)
+        print("Connected to Arduino on COM7")
     except serial.SerialException as e:
         print(f"❌ Failed to connect: {e}")
         return
@@ -25,9 +25,9 @@ def main():
                 print("Invalid. Use s, r, or q.")
                 continue
 
-            time.sleep(0.1)
-            response = arduino.readline().decode().strip()
-            print("Arduino:", response)  # should print ACK_SORT or ACK_RESET
+            time.sleep(2)
+            arduino.reset_input_buffer()  # ← clears READY and any startup messages
+            print("Arduino ready.")  # should print ACK_SORT or ACK_RESET
 
     except KeyboardInterrupt:
         print("\nInterrupted.")

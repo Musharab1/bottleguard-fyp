@@ -1,19 +1,21 @@
-// BottleGuard Arduino Bridge
-// Sustained signal version — holds pins until explicitly reset
+#include <Servo.h>
 
-#define PIN_CONVEYOR 7 // PLC: conveyor running signal
-#define PIN_SORT 9     // PLC: defect detected, activate sorter
-#define PIN_RESET 10   // PLC: reset sorter actuator
+#define PIN_SORT 6 // Servo signal pin
+
+Servo sortServo;
+
+// Positions
+#define POS_IDLE 0  // normal position — no defect
+#define POS_SORT 90 // sorting position — defect detected
 
 String command = "";
 
 void setup()
 {
     Serial.begin(9600);
-    pinMode(PIN_CONVEYOR, OUTPUT);
-    pinMode(PIN_SORT, OUTPUT);
-    pinMode(PIN_RESET, OUTPUT);
-    allLow();
+    sortServo.attach(PIN_SORT);
+    sortServo.write(POS_IDLE); // start at idle position
+    delay(500);
     Serial.println("READY");
 }
 
@@ -25,32 +27,15 @@ void loop()
         command.trim();
         command.toUpperCase();
 
-        if (command == "START")
+        if (command == "SORT")
         {
-            // Conveyor running normally — keep sort LOW
-            digitalWrite(PIN_CONVEYOR, HIGH);
-            digitalWrite(PIN_SORT, LOW);
-            Serial.println("ACK_START");
-        }
-        else if (command == "SORT")
-        {
-            // Defect detected — activate sorter, hold HIGH
-            digitalWrite(PIN_SORT, HIGH);
-            digitalWrite(PIN_CONVEYOR, LOW); // optional: pause conveyor
+            sortServo.write(POS_SORT); // rotate to sort position
             Serial.println("ACK_SORT");
         }
         else if (command == "RESET")
         {
-            // Bottle sorted — reset everything back to normal
-            digitalWrite(PIN_SORT, LOW);
-            digitalWrite(PIN_CONVEYOR, HIGH); // resume conveyor
+            sortServo.write(POS_IDLE); // return to idle
             Serial.println("ACK_RESET");
-        }
-        else if (command == "STOP")
-        {
-            // Emergency stop — everything LOW
-            allLow();
-            Serial.println("ACK_STOP");
         }
         else if (command == "STATUS")
         {
@@ -61,11 +46,4 @@ void loop()
             Serial.println("UNKNOWN_CMD");
         }
     }
-}
-
-void allLow()
-{
-    digitalWrite(PIN_CONVEYOR, LOW);
-    digitalWrite(PIN_SORT, LOW);
-    digitalWrite(PIN_RESET, LOW);
 }
