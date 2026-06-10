@@ -11,7 +11,7 @@ class YOLOService:
 
         self.locked_detections = []
         self.lock_counter      = 0
-        self.lock_frames       = 25
+        self.lock_frames       = 0
 
         print(f"[YOLO] Model loaded from {Config.MODEL_PATH}")
 

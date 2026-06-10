@@ -9,16 +9,16 @@ class PLCService:
         self.connected        = False
         self.conveyor_running = False
         self.commands_log     = []
-        self.port             = 'COM7'
+        self.port             = 'COM5'
         self.mode             = 'simulation'
-        self.pin9_state       = 'LOW'   # track SORT pin state
+        self.pin6_state       = 'LOW'   # ✅ pin 6 is the servo pin
         self.last_response    = None
 
-    def connect(self, port='COM7', baudrate=9600):
+    def connect(self, port='COM5', baudrate=9600):
         try:
             self.serial_conn = serial.Serial(port, baudrate, timeout=1)
-            time.sleep(2)                          # wait for Arduino reset
-            self.serial_conn.reset_input_buffer()  # flush READY message
+            time.sleep(2)
+            self.serial_conn.reset_input_buffer()
             self.connected = True
             self.port = port
             self.mode = 'hardware'
@@ -35,34 +35,31 @@ class PLCService:
 
         if self.connected and self.serial_conn:
             try:
-                # ✅ Send command with newline — Arduino uses readStringUntil('\n')
                 self.serial_conn.write(f"{command}\n".encode())
                 time.sleep(0.1)
                 response = self.serial_conn.readline().decode().strip()
                 self.last_response = response
                 print(f"[PLC] Sent: {command} | Arduino: {response}")
 
-                # update state tracking
                 self._update_state(command)
 
                 return {
-                    'success':   True,
-                    'command':   command,
-                    'response':  response,
-                    'pin9':      self.pin9_state,
-                    'mode':      'hardware'
+                    'success':  True,
+                    'command':  command,
+                    'response': response,
+                    'pin6':     self.pin6_state,   # ✅ pin 6
+                    'mode':     'hardware'
                 }
             except Exception as e:
                 print(f"[PLC] Serial error: {e}")
                 return {'success': False, 'error': str(e)}
         else:
-            # Simulation mode
             sim_responses = {
-                'START': 'ACK_START',
-                'STOP':  'ACK_STOP',
-                'SORT':  'ACK_SORT',
-                'RESET': 'ACK_RESET',
-                'STATUS':'STATUS_OK'
+                'START':  'ACK_START',
+                'STOP':   'ACK_STOP',
+                'SORT':   'ACK_SORT',
+                'RESET':  'ACK_RESET',
+                'STATUS': 'STATUS_OK'
             }
             response = sim_responses.get(command, 'UNKNOWN_CMD')
             self.last_response = response
@@ -72,31 +69,30 @@ class PLCService:
                 'success':  True,
                 'command':  command,
                 'response': response,
-                'pin9':     self.pin9_state,
+                'pin6':     self.pin6_state,       # ✅ pin 6
                 'mode':     'simulation'
             }
 
     def _update_state(self, command):
-        """Track conveyor and pin states based on command."""
         if command == 'START':
             self.conveyor_running = True
-            self.pin9_state = 'LOW'
+            self.pin6_state = 'LOW'
         elif command == 'STOP':
             self.conveyor_running = False
-            self.pin9_state = 'LOW'
+            self.pin6_state = 'LOW'
         elif command == 'SORT':
-            self.pin9_state = 'HIGH'   # sustained HIGH until RESET
+            self.pin6_state = 'HIGH'               # servo triggered on pin 6
             self.conveyor_running = False
         elif command == 'RESET':
-            self.pin9_state = 'LOW'
-            self.conveyor_running = True  # resume conveyor after reset
+            self.pin6_state = 'LOW'
+            self.conveyor_running = True
 
     def sort_defect(self, class_name):
         """Auto-called by YOLO when defect detected."""
         if class_name != 'Correct-Bottle':
             print(f"[PLC] Defect: {class_name} → sending SORT")
             result = self.send_command('SORT')
-            time.sleep(1)  # give actuator time to sort
+            time.sleep(1.5)
             self.send_command('RESET')
             return result
 
@@ -106,7 +102,7 @@ class PLCService:
             'conveyor_running': self.conveyor_running,
             'port':             self.port,
             'mode':             self.mode,
-            'pin9':             self.pin9_state,
+            'pin6':             self.pin6_state,   # ✅ pin 6
             'last_response':    self.last_response,
             'recent_commands':  self.commands_log[-10:]
         }
@@ -115,7 +111,7 @@ class PLCService:
         self.commands_log.append({
             'command':   command,
             'timestamp': datetime.utcnow().isoformat(),
-            'response':  None   # will be updated after send
+            'response':  None
         })
         if len(self.commands_log) > 50:
             self.commands_log = self.commands_log[-50:]

@@ -3,17 +3,19 @@ import time
 
 def main():
     try:
-        arduino = serial.Serial('COM7', 9600, timeout=1)
-        print("Connected to Arduino on COM7")
+        arduino = serial.Serial('COM5', 9600, timeout=1)  # ✅ COM5
+        print("Connected to Arduino on COM5")
     except serial.SerialException as e:
         print(f"❌ Failed to connect: {e}")
         return
 
     time.sleep(2)
+    arduino.reset_input_buffer()  # ✅ flush READY once at startup
+    print("Arduino ready.")
 
     try:
         while True:
-            cmd = input("Enter 's' for SORT (defect), 'r' for RESET (no defect), 'q' to Quit: ").strip().lower()
+            cmd = input("Enter 's' for SORT, 'r' for RESET, 'q' to Quit: ").strip().lower()
 
             if cmd == 'q':
                 break
@@ -25,9 +27,9 @@ def main():
                 print("Invalid. Use s, r, or q.")
                 continue
 
-            time.sleep(2)
-            arduino.reset_input_buffer()  # ← clears READY and any startup messages
-            print("Arduino ready.")  # should print ACK_SORT or ACK_RESET
+            time.sleep(0.1)
+            response = arduino.readline().decode().strip()  # ✅ read response
+            print(f"Arduino: {response}")
 
     except KeyboardInterrupt:
         print("\nInterrupted.")

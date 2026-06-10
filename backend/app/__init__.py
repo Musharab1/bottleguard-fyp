@@ -34,6 +34,6 @@ def create_app():
 
     # Auto-connect to Arduino if available
     from app.services.plc_service import plc_service
-    plc_service.connect(port='COM6')
+    plc_service.connect(port='COM5')
 
     return app
