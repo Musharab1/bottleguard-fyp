@@ -13,7 +13,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # YOLO
-    MODEL_PATH = str(BASE_DIR / 'weights' / 'yolo11n.pt')
+    MODEL_PATH = str(BASE_DIR / 'weights' / 'best.pt')
     CONFIDENCE_THRESHOLD = 0.7
     CLASS_NAMES = ['Cap-missing', 'Correct-Bottle', 'Label-missing']
 
@@ -21,7 +21,7 @@ class Config:
     
     CAMERA_INDEX = 0
 
-    # CAMERA_INDEX = 1    # ---> for the cable camera
+    #CAMERA_INDEX = 1    # ---> for the cable camera
     
     # CAMERA_INDEX = r'C:\Users\PMLS\Documents\FYP\FYP\bottleguard-fyp\backend\test_videos\bottles_test.mp4'
 

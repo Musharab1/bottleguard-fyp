@@ -22,11 +22,11 @@ def get_history():
 
 @history_bp.route('/stats', methods=['GET'])
 def get_stats():
-    total      = Inspection.query.count()
-    defective  = Inspection.query.filter_by(is_defective=True).count()
-    correct    = Inspection.query.filter_by(is_defective=False).count()
-    cap        = Inspection.query.filter_by(class_name='Cap-missing').count()
-    label      = Inspection.query.filter_by(class_name='Label-missing').count()
+    total     = Inspection.query.count()
+    defective = Inspection.query.filter_by(is_defective=True).count()
+    correct   = Inspection.query.filter_by(is_defective=False).count()
+    cap       = Inspection.query.filter_by(class_name='Cap-Miss').count()
+    label     = Inspection.query.filter_by(class_name='Label-Miss').count()
 
     return jsonify({
         'total':         total,

@@ -138,7 +138,7 @@ def detection_loop():
                     print(f"[BottleGuard] Bottle #{bottle_id} → DEFECT → SORT")
                     def sort_and_reset():
                         plc_service.send_command('SORT')
-                        time.sleep(1.5)
+                        time.sleep(5)
                         plc_service.send_command('RESET')
                     threading.Thread(target=sort_and_reset, daemon=True).start()
                 else:

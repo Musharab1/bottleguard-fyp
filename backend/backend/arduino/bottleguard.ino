@@ -1,8 +1,8 @@
 #include <Servo.h>
 
-#define PIN_SORT 6  // Servo signal pin
-#define POS_IDLE 0  // normal position — no defect
-#define POS_SORT 90 // sorting position — defect detected
+#define PIN_SORT 6   // Servo signal pin
+#define POS_IDLE 200 // normal position — no defect
+#define POS_SORT 90  // sorting position — defect detected
 
 Servo sortServo;
 String command = "";

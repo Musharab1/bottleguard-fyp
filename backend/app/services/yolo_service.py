@@ -13,7 +13,10 @@ class YOLOService:
         self.lock_counter      = 0
         self.lock_frames       = 0
 
+        # ✅ Print model's own class names so we can verify they match config
         print(f"[YOLO] Model loaded from {Config.MODEL_PATH}")
+        print(f"[YOLO] Model classes: {self.model.names}")
+        print(f"[YOLO] Config classes: {self.class_names}")
 
     def predict(self, frame):
         results    = self.model(frame, conf=self.confidence, verbose=False)
@@ -21,9 +24,17 @@ class YOLOService:
 
         for result in results:
             for box in result.boxes:
-                cls_id     = int(box.cls[0])
-                conf       = float(box.conf[0])
-                class_name = self.class_names[cls_id]
+                cls_id = int(box.cls[0])
+                conf   = float(box.conf[0])
+
+                # ✅ Use model's own class names — never use config index
+                # This prevents IndexError if cls_id doesn't match config list
+                class_name = self.model.names.get(cls_id)
+
+                if class_name is None:
+                    print(f"[YOLO] Unknown cls_id={cls_id} — skipping")
+                    continue
+
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
 
                 detections.append({
